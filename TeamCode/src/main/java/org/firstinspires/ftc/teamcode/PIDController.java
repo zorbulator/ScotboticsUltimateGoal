@@ -23,7 +23,7 @@ public class PIDController {
         double output = 
             projected * error +
             previousIntegral +
-            (error-error_prior) /deltatime;
+            (error-previousError) / deltatime;
         previousError = error;
         return output
     }
