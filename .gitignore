@@ -24,5 +24,10 @@ Thumbs.db
 .gradle
 build/
 
+# VScode
+.vscode/
+.settings/
+.project
+
 *ASUS_PC_01*
 
