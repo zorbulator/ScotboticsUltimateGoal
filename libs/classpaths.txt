@@ -1,0 +1,12 @@
+
+<classpathentry kind="lib" path="/home/zorb/Documents/ScotboticsUltimateGoal/libs/Analytics-release.jar" sourcepath="/home/zorb/Documents/ScotboticsUltimateGoal/libs/Analytics-release-sources.jar"/>
+<classpathentry kind="lib" path="/home/zorb/Documents/ScotboticsUltimateGoal/libs/Blocks-release.jar" sourcepath="/home/zorb/Documents/ScotboticsUltimateGoal/libs/Blocks-release-sources.jar"/>
+<classpathentry kind="lib" path="/home/zorb/Documents/ScotboticsUltimateGoal/libs/FtcCommon-release.jar" sourcepath="/home/zorb/Documents/ScotboticsUltimateGoal/libs/FtcCommon-release-sources.jar"/>
+<classpathentry kind="lib" path="/home/zorb/Documents/ScotboticsUltimateGoal/libs/Hardware-release.jar" sourcepath="/home/zorb/Documents/ScotboticsUltimateGoal/libs/Hardware-release-sources.jar"/>
+<classpathentry kind="lib" path="/home/zorb/Documents/ScotboticsUltimateGoal/libs/Inspection-release.jar" sourcepath="/home/zorb/Documents/ScotboticsUltimateGoal/libs/Inspection-release-sources.jar"/>
+<classpathentry kind="lib" path="/home/zorb/Documents/ScotboticsUltimateGoal/libs/OnBotJava-release.jar" sourcepath="/home/zorb/Documents/ScotboticsUltimateGoal/libs/OnBotJava-release-sources.jar"/>
+<classpathentry kind="lib" path="/home/zorb/Documents/ScotboticsUltimateGoal/libs/RobotCore-release.jar" sourcepath="/home/zorb/Documents/ScotboticsUltimateGoal/libs/RobotCore-release-sources.jar"/>
+<classpathentry kind="lib" path="/home/zorb/Documents/ScotboticsUltimateGoal/libs/RobotServer-release.jar" sourcepath="/home/zorb/Documents/ScotboticsUltimateGoal/libs/RobotServer-release-sources.jar"/>
+<classpathentry kind="lib" path="/home/zorb/Documents/ScotboticsUltimateGoal/libs/tensorflow-lite-0.jar" sourcepath="/home/zorb/Documents/ScotboticsUltimateGoal/libs/tensorflow-lite-0-sources.jar"/>
+<classpathentry kind="lib" path="/home/zorb/Documents/ScotboticsUltimateGoal/libs/tfod-release.jar" sourcepath="/home/zorb/Documents/ScotboticsUltimateGoal/libs/tfod-release-sources.jar"/>
+<classpathentry kind="lib" path="/home/zorb/Documents/ScotboticsUltimateGoal/libs/WirelessP2p-release.jar" sourcepath="/home/zorb/Documents/ScotboticsUltimateGoal/libs/WirelessP2p-release-sources.jar"/>

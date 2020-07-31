@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.robotcontroller.external.samples;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -53,7 +53,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class ScotBot
 {
     /* Public OpMode members. */
-    public DcMotor  fl   = null;
+    public DcMotor  fl  = null;
     public DcMotor  fr  = null;
     public DcMotor  bl  = null;
     public DcMotor  br  = null;
@@ -65,7 +65,7 @@ public class ScotBot
     private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
-    public HardwarePushbot(HardwareMap ahwMap){
+    public ScotBot(HardwareMap ahwMap){
         // Save reference to Hardware map
         hwMap = ahwMap;
 
@@ -79,7 +79,7 @@ public class ScotBot
         bl.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         br.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
 
-        // Set all motors to zero power
+        //Set all motors to zero power
         fl.setPower(0);
         fr.setPower(0);
         bl.setPower(0);
@@ -91,5 +91,17 @@ public class ScotBot
         fr.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         bl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         br.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+    }
+
+    public void DriveTurn(double speed, double turn) {
+        double leftPower = speed + turn;
+        double rightPower = speed - turn;
+
+        fl.setPower(leftPower);
+        bl.setPower(leftPower);
+
+        fr.setPower(rightPower);
+        br.setPower(rightPower);
     }
  }
