@@ -1,6 +1,6 @@
 import java.lang.System;   
-
-
+ 
+// Class for caculating the PID error correction in discrete time.
 public class PIDController {
 
     private final double projected, integral, derivative;
@@ -15,8 +15,8 @@ public class PIDController {
         this.derivative = derivative;
     }
 
-    // Caculate error correction and update "Prior" values.
-    public double update(double error)
+    // Caculate PID error correction and update "Prior" values.
+    public double getErrorCorrection(double error)
     {
         long deltaTime = -timePrior + (timePrior=System.currentTimeMillis());
         return projected  * error +
