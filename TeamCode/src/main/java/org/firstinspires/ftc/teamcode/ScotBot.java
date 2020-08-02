@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 /**
  * This is NOT an opmode.
@@ -98,6 +99,9 @@ public class ScotBot
         double leftPower = speed + turn;
         double rightPower = speed - turn;
 
+        // Making sure speed is between 0 and 1
+        leftPower = Range.clip(leftPower, 0.0, 1.0);
+        rightPower = Range.clip(rightPower, 0.0, 1.0);
         fl.setPower(leftPower);
         bl.setPower(leftPower);
 
