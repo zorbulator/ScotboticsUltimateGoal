@@ -4,7 +4,7 @@ import java.lang.System;
 public class PIDController {
 
     private final double projected, integral, derivative;
-    private long       timePrior = System.currentTimeMillis();
+    private ElapsedTime   period = new ElapsedTime();
     private double    errorPrior = 0;
     private double integralPrior = 0;
 
@@ -18,7 +18,8 @@ public class PIDController {
     /* Calculate PID error correction and update "Prior" values. */
     public double getErrorCorrection(double error)
     {
-        long deltaTime = -timePrior + (timePrior=System.currentTimeMillis());
+        long deltaTime = period.now();
+        period.reset();
         return projected  * error +
                integral   * (integralPrior += error * deltaTime) +
                derivative * (-errorPrior + (errorPrior=error)) / deltaTime;
