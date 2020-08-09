@@ -1,12 +1,13 @@
-import java.lang.System;   
- 
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 /* Class for calculating the PID error correction in discrete time. */
 public class PIDController {
 
     private final double projected, integral, derivative;
-    private ElapsedTime   period = new ElapsedTime();
-    private double    errorPrior = 0;
-    private double integralPrior = 0;
+    private double errorPrior, integralPrior;
+    private ElapsedTime period = new ElapsedTime();
 
     public PIDController(double projected, double integral, double derivative)
     {
@@ -15,7 +16,6 @@ public class PIDController {
         this.derivative = derivative;
     }
 
-    /* Calculate PID error correction and update "Prior" values. */
     public double getErrorCorrection(double error)
     {
         long deltaTime = period.now();
