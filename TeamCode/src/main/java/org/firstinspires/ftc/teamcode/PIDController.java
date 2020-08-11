@@ -18,7 +18,7 @@ public class PIDController {
 
     public double getErrorCorrection(double error)
     {
-        long deltaTime = period.now();
+        long deltaTime = period.nanoseconds();
         period.reset();
         return projected  * error +
                integral   * (integralPrior += error * deltaTime) +

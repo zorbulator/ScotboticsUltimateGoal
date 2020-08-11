@@ -73,8 +73,8 @@ public class ScotBot
     }
 
     public void DriveTurn(double speed, double turn) {
-        leftPower  = Range.clip(speed + turn, 0.0, 1.0);
-        rightPower = Range.clip(speed - turn, 0.0, 1.0);
+        double leftPower  = Range.clip(speed + turn, 0.0, 1.0);
+        double rightPower = Range.clip(speed - turn, 0.0, 1.0);
 
         fl.setPower(leftPower);
         bl.setPower(leftPower);
