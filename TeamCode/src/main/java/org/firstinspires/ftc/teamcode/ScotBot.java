@@ -46,6 +46,8 @@ public class ScotBot
     public DcMotor bl;
     public DcMotor br;
 
+    public double x, y;
+
     HardwareMap hwMap;
 
     public ScotBot(HardwareMap hwMap) {
