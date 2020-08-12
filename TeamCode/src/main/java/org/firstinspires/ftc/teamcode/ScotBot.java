@@ -35,11 +35,19 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import java.lang.UnsupportedOperationException;
+
 
 
 public class ScotBot
 {
     public static final double MID_SERVO = 0.5;
+
+    public static final int CORRECTION_TURN = 1;
+    public static final int CORRECTION_BALANCE = 2;
+    public static final int CORRECTION_Y_MOVEMENT = 4;
+
+    public double x, y, rotation;
 
     public DcMotor fl, fr, bl, br;
 
@@ -79,9 +87,13 @@ public class ScotBot
         br.setPower(rightPower);
     }
 
+    public void MecanumCorrectionDrive(double x, double y, double turn, int tags)
+    {
+        
+    }
 
     public void MecanumDrive(double x, double y, double turn, double balence)
     {
-        throw new NotImplementedException("TODO: Assigned to jeremy.");
+        throw new UnsupportedOperationException("TODO: Assigned to jeremy.");
     }
 }
