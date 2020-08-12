@@ -41,11 +41,21 @@ import java.lang.UnsupportedOperationException;
 
 public class ScotBot
 {
+    private PIDController TurnPID = new PIDController(1, 1, 1); 
+    private PIDController MovementPID = new PIDController(1, 1, 1);
+ 
     public static final double MID_SERVO = 0.5;
+    public static final double TURN_SCALAR = 1; // Further testing is needed
+    public static final double Y_SCALAR = 1; // Further testing is needed
+    public static final double ALTERNATE_BALENCE = .5; // Further testing is needed
 
+    public static final int CORRECTION_NONE = 0;
     public static final int CORRECTION_TURN = 1;
     public static final int CORRECTION_BALANCE = 2;
-    public static final int CORRECTION_Y_MOVEMENT = 4;
+    public static final int CORRECTION_MOVEMENT = 4;
+    public static final int CORRECTION_ALL = 7;
+
+    public int correctionFlags = 0;
 
     public double x, y, rotation;
 
@@ -87,9 +97,19 @@ public class ScotBot
         br.setPower(rightPower);
     }
 
-    public void MecanumCorrectionDrive(double x, double y, double turn, int tags)
+    public void MecanumCorrectionDrive(double x, double y, double turn)
     {
-        
+        if ((correctionFlags & CORRECTION_TURN) == correctionFlags)
+        {
+            turn *= TURN_SCALAR;
+            turn += TurnPID.getCorrection(rotation, turn);
+        }
+        if ((correctionFlags & CORRECTION_TURN) == correctionFlags)
+        {
+            y *= Y_SCALAR;
+            y += MovementPID.getCorrection((odoLeft.getCurrentPosition() * odoLeftMultiplier+odoRight.getCurrentPosition() * odoRightMultiplier)/2, y);
+        }
+        MecanumDrive(x, y, turn, (((correctionFlags & CORRECTION_BALANCE) == correctionFlags) ? .5 : ALTERNATE_BALENCE));
     }
 
     public void MecanumDrive(double x, double y, double turn, double balence)
