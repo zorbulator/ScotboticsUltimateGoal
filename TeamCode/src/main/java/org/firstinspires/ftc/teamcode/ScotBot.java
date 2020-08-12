@@ -41,10 +41,7 @@ public class ScotBot
 {
     public static final double MID_SERVO = 0.5;
 
-    public DcMotor fl;
-    public DcMotor fr;
-    public DcMotor bl;
-    public DcMotor br;
+    public DcMotor fl, fr, bl, br;
 
     HardwareMap hwMap;
 
@@ -80,5 +77,11 @@ public class ScotBot
         bl.setPower(leftPower);
         fr.setPower(rightPower);
         br.setPower(rightPower);
+    }
+
+
+    public void MecanumDrive(double x, double y, double turn, double balence)
+    {
+        throw new NotImplementedException("TODO: Assigned to jeremy.");
     }
 }
