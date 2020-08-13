@@ -41,19 +41,17 @@ import java.lang.UnsupportedOperationException;
 
 public class ScotBot
 {
-    private PIDController TurnPID = new PIDController(1, 1, 1); 
-    private PIDController MovementPID = new PIDController(1, 1, 1);
+    private PIDController TurningPID; 
+    private PIDController MovementPID;
  
     public static final double MID_SERVO = 0.5;
     public static final double TURN_SCALAR = 1; // Further testing is needed
     public static final double Y_SCALAR = 1; // Further testing is needed
-    public static final double ALTERNATE_BALENCE = .5; // Further testing is needed
 
     public static final int CORRECTION_NONE = 0;
     public static final int CORRECTION_TURN = 1;
     public static final int CORRECTION_BALANCE = 2;
     public static final int CORRECTION_MOVEMENT = 4;
-    public static final int CORRECTION_ALL = 7;
 
     public int correctionFlags = 0;
 
@@ -110,17 +108,22 @@ public class ScotBot
 
     public void MecanumCorrectionDrive(double _x, double _y, double turn)
     {
+        double balance = .5;
         if ((correctionFlags & CORRECTION_TURN) == correctionFlags)
         {
             turn *= TURN_SCALAR;
-            turn += TurnPID.getCorrection(rotation, turn);
+            turn += TurningPID.getCorrection(rotation, turn);
         }
         if ((correctionFlags & CORRECTION_TURN) == correctionFlags)
         {
             _y *= Y_SCALAR;
             _y += MovementPID.getCorrection((odoLeft.getCurrentPosition() * odoLeftMultiplier+odoRight.getCurrentPosition() * odoRightMultiplier)/2, _y);
         }
-        MecanumDrive(_x, _y, turn, (((correctionFlags & CORRECTION_BALANCE) == correctionFlags) ? .5 : ALTERNATE_BALENCE));
+        if ((correctionFlags & CORRECTION_BALANCE) == correctionFlags)
+        {
+            balance +=TurningPID.getCorrection(rotation, turn);
+        }
+        MecanumDrive(_x, _y, turn, balance);
     }
 
     public void MecanumDrive(double _x, double _y, double turn, double balence)
@@ -130,6 +133,19 @@ public class ScotBot
         fr.setPower((-_y+_x-turn) *    balence /maxBalence);
         bl.setPower((-_y+_x+turn) * (1-balence)/maxBalence);
         br.setPower((-_y-_x-turn) * (1-balence)/maxBalence);
+    }
+
+    public void UpdateFlags(int flags)
+    {
+        int turningFlags = flags & (CORRECTION_TURN | CORRECTION_BALANCE);
+        if (CORRECTION_TURN | CORRECTION_BALANCE) {/* do something to warn */}
+        turningFlags &= ~correctionFlags;
+        if (turningFlags == CORRECTION_TURN)
+            TurningPID = new PIDController(1, 1, 1);  //config these numbers
+        if (turningFlags == CORRECTION_BALANCE)
+            TurningPID = new PIDController(1, 1, 1);  //config these numbers
+        if (flags & CORRECTION_MOVEMENT & ~correctionFlags)
+            MovementPID = new PIDController(1, 1, 1); //config these numbers
     }
 
     public void updateOdometry() {
