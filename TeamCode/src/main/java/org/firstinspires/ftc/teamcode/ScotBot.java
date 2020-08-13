@@ -125,7 +125,11 @@ public class ScotBot
 
     public void MecanumDrive(double x, double y, double turn, double balence)
     {
-        throw new UnsupportedOperationException("TODO: Assigned to jeremy.");
+        maxBalence = max(1-balence, balence);
+        fl.setPower((-y-x+turn) *    balence /maxBalence);
+        fr.setPower((-y+x-turn) *    balence /maxBalence);
+        bl.setPower((-y+x+turn) * (1-balence)/maxBalence);
+        br.setPower((-y-x-turn) * (1-balence)/maxBalence);
     }
 
     public void updateOdometry() {
