@@ -138,14 +138,17 @@ public class ScotBot
     public void UpdateFlags(int flags)
     {
         int turningFlags = flags & (CORRECTION_TURN | CORRECTION_BALANCE);
-        if (CORRECTION_TURN | CORRECTION_BALANCE) {/* do something to warn */}
         turningFlags &= ~correctionFlags;
+        correctionFlags ^= turningFlags;
         if (turningFlags == CORRECTION_TURN)
             TurningPID = new PIDController(1, 1, 1);  //config these numbers
         if (turningFlags == CORRECTION_BALANCE)
             TurningPID = new PIDController(1, 1, 1);  //config these numbers
         if (flags & CORRECTION_MOVEMENT & ~correctionFlags)
+        {
             MovementPID = new PIDController(1, 1, 1); //config these numbers
+            correctionFlags |= CORRECTION_MOVEMENT;
+        }
     }
 
     public void updateOdometry() {
