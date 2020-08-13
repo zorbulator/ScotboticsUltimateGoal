@@ -61,6 +61,17 @@ public class ScotBot
 
     public DcMotor fl, fr, bl, br;
 
+    public DcMotor odoSide, odoLeft, odoRight; // references to normal motors where odometry encoders are connected
+
+    private double odoSidePos = 0, odoLeftPos = 0, odoRightPos = 0; // positions of odometry encoders, only used for convenience
+    private double oldOdoSidePos = 0, oldOdoLeftPos = 0, oldOdoRightPos = 0; // store old positions to find delta
+    private double rotationDelta = 0;
+
+    private static final double RADIANS_PER_COUNT_DIFFERENCE = 10.0; // radians for every count of difference between the odo wheels found with calibration
+    private static final double ODO_SIDE_OFFSET = 10.0; // the offset of the horizontal odo wheel, found with calibration
+
+    private int odoLeftMultiplier = 1, odoRightMultiplier = 1, odoSideMultiplier = 1; // multipliers for encoder position
+
     HardwareMap hwMap;
 
     public ScotBot(HardwareMap hwMap) {
@@ -115,5 +126,29 @@ public class ScotBot
     public void MecanumDrive(double x, double y, double turn, double balence)
     {
         throw new UnsupportedOperationException("TODO: Assigned to jeremy.");
+    }
+
+    public void updateOdometry() {
+        odoLeftPos  = odoLeft.getCurrentPosition()  * odoLeftMultiplier;
+        odoRightPos = odoRight.getCurrentPosition() * odoRightMultiplier; // get positions of wheels with multiplier
+
+        double leftDelta = odoLeftPos - oldOdoLeftPos;
+        double rightDelta = odoRightPos - oldOdoRightPos; // find change in position
+
+        rotationDelta = (leftDelta - rightDelta) / RADIANS_PER_COUNT_DIFFERENCE; // get difference between wheels and use constant to find radians
+        rotation += rotationDelta;
+
+        odoSidePos = odoSide.getCurrentPosition() * odoSideMultiplier;
+        double rawSideDelta = odoSidePos - oldOdoSidePos;
+        double deltaX = rawSideDelta - (rotationDelta*ODO_SIDE_OFFSET); // correct for offset of wheel using constant
+
+        double deltaY = (leftDelta + rightDelta) / 2; // average both sides to find forward movement
+
+        x += (deltaY*Math.sin(rotation)) + (deltaX*Math.cos(rotation));
+        y += (deltaY*Math.cos(rotation)) - (deltaX*Math.sin(rotation)); // change global position based on current orientation
+
+        oldOdoLeftPos  = odoLeftPos;
+        oldOdoRightPos = odoRightPos;
+        oldOdoSidePos  = odoSidePos;
     }
 }
