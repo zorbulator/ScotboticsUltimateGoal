@@ -125,7 +125,7 @@ public class ScotBot
 
     public void MecanumDrive(double _x, double _y, double turn, double balence)
     {
-        maxBalence = max(1-balence, balence);
+        double maxBalence = Math.max(1-balence, balence);
         fl.setPower((-_y-_x+turn) *    balence /maxBalence);
         fr.setPower((-_y+_x-turn) *    balence /maxBalence);
         bl.setPower((-_y+_x+turn) * (1-balence)/maxBalence);
