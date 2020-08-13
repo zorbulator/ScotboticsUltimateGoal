@@ -108,7 +108,7 @@ public class ScotBot
         br.setPower(rightPower);
     }
 
-    public void MecanumCorrectionDrive(double x, double y, double turn)
+    public void MecanumCorrectionDrive(double _x, double _y, double turn)
     {
         if ((correctionFlags & CORRECTION_TURN) == correctionFlags)
         {
@@ -117,19 +117,19 @@ public class ScotBot
         }
         if ((correctionFlags & CORRECTION_TURN) == correctionFlags)
         {
-            y *= Y_SCALAR;
-            y += MovementPID.getCorrection((odoLeft.getCurrentPosition() * odoLeftMultiplier+odoRight.getCurrentPosition() * odoRightMultiplier)/2, y);
+            _y *= Y_SCALAR;
+            _y += MovementPID.getCorrection((odoLeft.getCurrentPosition() * odoLeftMultiplier+odoRight.getCurrentPosition() * odoRightMultiplier)/2, _y);
         }
-        MecanumDrive(x, y, turn, (((correctionFlags & CORRECTION_BALANCE) == correctionFlags) ? .5 : ALTERNATE_BALENCE));
+        MecanumDrive(_x, _y, turn, (((correctionFlags & CORRECTION_BALANCE) == correctionFlags) ? .5 : ALTERNATE_BALENCE));
     }
 
-    public void MecanumDrive(double x, double y, double turn, double balence)
+    public void MecanumDrive(double _x, double _y, double turn, double balence)
     {
         maxBalence = max(1-balence, balence);
-        fl.setPower((-y-x+turn) *    balence /maxBalence);
-        fr.setPower((-y+x-turn) *    balence /maxBalence);
-        bl.setPower((-y+x+turn) * (1-balence)/maxBalence);
-        br.setPower((-y-x-turn) * (1-balence)/maxBalence);
+        fl.setPower((-_y-_x+turn) *    balence /maxBalence);
+        fr.setPower((-_y+_x-turn) *    balence /maxBalence);
+        bl.setPower((-_y+_x+turn) * (1-balence)/maxBalence);
+        br.setPower((-_y-_x-turn) * (1-balence)/maxBalence);
     }
 
     public void updateOdometry() {
