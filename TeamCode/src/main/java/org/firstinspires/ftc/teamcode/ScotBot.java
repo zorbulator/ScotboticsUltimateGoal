@@ -41,15 +41,34 @@ import java.lang.UnsupportedOperationException;
 
 public class ScotBot
 {
+    private PIDController TurningPID; 
+    private PIDController MovementPID;
+ 
     public static final double MID_SERVO = 0.5;
+    public static final double TURN_SCALAR = 1; // Further testing is needed
+    public static final double Y_SCALAR = 1; // Further testing is needed
 
+    public static final int CORRECTION_NONE = 0;
     public static final int CORRECTION_TURN = 1;
     public static final int CORRECTION_BALANCE = 2;
-    public static final int CORRECTION_Y_MOVEMENT = 4;
+    public static final int CORRECTION_MOVEMENT = 4;
+
+    public int correctionFlags = 0;
 
     public double x, y, rotation;
 
     public DcMotor fl, fr, bl, br;
+
+    public DcMotor odoSide, odoLeft, odoRight; // references to normal motors where odometry encoders are connected
+
+    private double odoSidePos = 0, odoLeftPos = 0, odoRightPos = 0; // positions of odometry encoders, only used for convenience
+    private double oldOdoSidePos = 0, oldOdoLeftPos = 0, oldOdoRightPos = 0; // store old positions to find delta
+    private double rotationDelta = 0;
+
+    private static final double RADIANS_PER_COUNT_DIFFERENCE = 10.0; // radians for every count of difference between the odo wheels found with calibration
+    private static final double ODO_SIDE_OFFSET = 10.0; // the offset of the horizontal odo wheel, found with calibration
+
+    private int odoLeftMultiplier = 1, odoRightMultiplier = 1, odoSideMultiplier = 1; // multipliers for encoder position
 
     HardwareMap hwMap;
 
@@ -87,13 +106,72 @@ public class ScotBot
         br.setPower(rightPower);
     }
 
-    public void MecanumCorrectionDrive(double x, double y, double turn, int tags)
+    public void MecanumCorrectionDrive(double _x, double _y, double turn)
     {
-        
+        double balance = .5;
+        if ((correctionFlags & CORRECTION_TURN) == correctionFlags)
+        {
+            turn *= TURN_SCALAR;
+            turn += TurningPID.getCorrection(rotation, turn);
+        }
+        if ((correctionFlags & CORRECTION_TURN) == correctionFlags)
+        {
+            _y *= Y_SCALAR;
+            _y += MovementPID.getCorrection((odoLeft.getCurrentPosition() * odoLeftMultiplier+odoRight.getCurrentPosition() * odoRightMultiplier)/2, _y);
+        }
+        if ((correctionFlags & CORRECTION_BALANCE) == correctionFlags)
+        {
+            balance +=TurningPID.getCorrection(rotation, turn);
+        }
+        MecanumDrive(_x, _y, turn, balance);
     }
 
-    public void MecanumDrive(double x, double y, double turn, double balence)
+    public void MecanumDrive(double _x, double _y, double turn, double balence)
     {
-        throw new UnsupportedOperationException("TODO: Assigned to jeremy.");
+        double maxBalence = Math.max(1-balence, balence);
+        fl.setPower((-_y-_x+turn) *    balence /maxBalence);
+        fr.setPower((-_y+_x-turn) *    balence /maxBalence);
+        bl.setPower((-_y+_x+turn) * (1-balence)/maxBalence);
+        br.setPower((-_y-_x-turn) * (1-balence)/maxBalence);
+    }
+
+    public void UpdateFlags(int flags)
+    {
+        int turningFlags = flags & (CORRECTION_TURN | CORRECTION_BALANCE);
+        turningFlags &= ~correctionFlags;
+        correctionFlags ^= turningFlags;
+        if (turningFlags == CORRECTION_TURN)
+            TurningPID = new PIDController(1, 1, 1);  //config these numbers
+        if (turningFlags == CORRECTION_BALANCE)
+            TurningPID = new PIDController(1, 1, 1);  //config these numbers
+        if (flags & CORRECTION_MOVEMENT & ~correctionFlags)
+        {
+            MovementPID = new PIDController(1, 1, 1); //config these numbers
+            correctionFlags |= CORRECTION_MOVEMENT;
+        }
+    }
+
+    public void updateOdometry() {
+        odoLeftPos  = odoLeft.getCurrentPosition()  * odoLeftMultiplier;
+        odoRightPos = odoRight.getCurrentPosition() * odoRightMultiplier; // get positions of wheels with multiplier
+
+        double leftDelta = odoLeftPos - oldOdoLeftPos;
+        double rightDelta = odoRightPos - oldOdoRightPos; // find change in position
+
+        rotationDelta = (leftDelta - rightDelta) / RADIANS_PER_COUNT_DIFFERENCE; // get difference between wheels and use constant to find radians
+        rotation += rotationDelta;
+
+        odoSidePos = odoSide.getCurrentPosition() * odoSideMultiplier;
+        double rawSideDelta = odoSidePos - oldOdoSidePos;
+        double deltaX = rawSideDelta - (rotationDelta*ODO_SIDE_OFFSET); // correct for offset of wheel using constant
+
+        double deltaY = (leftDelta + rightDelta) / 2; // average both sides to find forward movement
+
+        x += (deltaY*Math.sin(rotation)) + (deltaX*Math.cos(rotation));
+        y += (deltaY*Math.cos(rotation)) - (deltaX*Math.sin(rotation)); // change global position based on current orientation
+
+        oldOdoLeftPos  = odoLeftPos;
+        oldOdoRightPos = odoRightPos;
+        oldOdoSidePos  = odoSidePos;
     }
 }
