@@ -126,16 +126,16 @@ public class ScotBot
         MecanumDrive(_x, _y, turn, balance);
     }
 
-    public void MecanumDrive(double _x, double _y, double turn, double balence)
+    public void MecanumDrive(double _x, double _y, double turn, double balance)
     {
-        double maxBalence = Math.max(1-balence, balence);
-        fl.setPower((-_y-_x+turn) *    balence /maxBalence);
-        fr.setPower((-_y+_x-turn) *    balence /maxBalence);
-        bl.setPower((-_y+_x+turn) * (1-balence)/maxBalence);
-        br.setPower((-_y-_x-turn) * (1-balence)/maxBalence);
+        double maxBalance = Math.max(1-balance, balance);
+        fl.setPower((-_y-_x+turn) *    balance /maxBalance);
+        fr.setPower((-_y+_x-turn) *    balance /maxBalance);
+        bl.setPower((-_y+_x+turn) * (1-balance)/maxBalance);
+        br.setPower((-_y-_x-turn) * (1-balance)/maxBalance);
     }
 
-    public void UpdateFlags(int flags)
+    public void UpdateFlags(int flags) // can you comment this
     {
         int turningFlags = flags & (CORRECTION_TURN | CORRECTION_BALANCE);
         turningFlags &= ~correctionFlags;
@@ -144,7 +144,7 @@ public class ScotBot
             TurningPID = new PIDController(1, 1, 1);  //config these numbers
         if (turningFlags == CORRECTION_BALANCE)
             TurningPID = new PIDController(1, 1, 1);  //config these numbers
-        if (flags & CORRECTION_MOVEMENT & ~correctionFlags)
+        if ((flags & CORRECTION_MOVEMENT & ~correctionFlags) != 0) // hopefully the != 0 doesn't break anything; I was getting an error that int can't be converted to bool
         {
             MovementPID = new PIDController(1, 1, 1); //config these numbers
             correctionFlags |= CORRECTION_MOVEMENT;
